@@ -71,4 +71,43 @@ With aging enabled, P1's priority increases every two waiting units:
 
 Once its priority reaches 5, it is selected according to the scheduling policy, eliminating starvation.
 
+# Task 3 – Synchronization Fix
 
+## Unsynchronized Version
+
+The unsynchronized program demonstrates a deterministic race condition.
+
+A `threading.Barrier(2)` is placed between the **read** and **write** steps of the increment operation.
+
+This forces both threads to:
+
+1. Read the same counter value.
+2. Wait until both have read it.
+3. Increment their local copy.
+4. Write the same incremented value back.
+
+As a result, one increment is lost every iteration.
+
+Example output:
+
+```
+Expected Counter : 20000
+Actual Counter   : 10000
+```
+
+## Synchronized Version
+
+The synchronized program uses a binary semaphore implemented with `threading.Lock()`.
+
+The entire read–modify–write operation is placed inside the critical section.
+
+The barrier is removed because it is no longer needed once mutual exclusion is enforced.
+
+Example output:
+
+```
+Expected Counter : 20000
+Actual Counter   : 20000
+```
+
+The synchronized version produces the correct counter value every time.
